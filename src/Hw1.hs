@@ -31,7 +31,8 @@ import Prelude  hiding (replicate, sum, reverse)
 -- []
 
 listReverse :: [a] -> [a]
-listReverse xs = error "TBD:listReverse"
+listReverse [] = []
+listReverse (x:xs) = listReverse xs ++ [x]
 
 
 -- | Determine whether a string is a palindrome (i.e. spelled the same
@@ -47,7 +48,10 @@ listReverse xs = error "TBD:listReverse"
 -- True
 
 palindrome :: String -> Bool
-palindrome w = error "TBD:palindrome"
+palindrome w =
+    if w == listReverse w
+        then True
+    else False
 
 
 -- | `digitsOfInt n` should return `[]` if `n` is not positive,
@@ -64,7 +68,10 @@ palindrome w = error "TBD:palindrome"
 -- []
 
 digitsOfInt :: Integer -> [Integer]
-digitsOfInt n = error "TBD:digitsOfInt"
+digitsOfInt n =
+    if n <= 0
+        then []
+        else digitsOfInt (div n 10) ++ [mod n 10]
 
 
 -- | `digitsOfInts xs` should return a list containing all of the digits
@@ -76,8 +83,13 @@ digitsOfInt n = error "TBD:digitsOfInt"
 -- >>> digitsOfInts []
 -- []
 
+
 digitsOfInts :: [Integer] -> [Integer]
-digitsOfInts xs = error "TBD:digitsOfInts"
+digitsOfInts xs =
+    if xs == []
+        then []
+        else digitsOfInt (head xs) ++ digitsOfInts(tail xs)
+
 
 
 -- | Doubles every other integer in a list,
@@ -93,7 +105,12 @@ digitsOfInts xs = error "TBD:digitsOfInts"
 -- []
 
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther xs = error "TBD:doubleEveryOther"
+doubleEveryOther xs =
+    if xs == []
+        then []
+        else if tail(xs) == []
+            then [head xs]
+            else [head xs] ++ [head(tail(xs))*2] ++ doubleEveryOther (tail(tail(xs)))
 
 
 -- | Sum the elements of a list
@@ -108,7 +125,10 @@ doubleEveryOther xs = error "TBD:doubleEveryOther"
 -- 36
 
 sumList :: [Integer] -> Integer
-sumList xs = error "TBD:sumList"
+sumList xs =
+    if xs == []
+        then 0
+    else head xs + sumList (tail(xs))
 
 
 -- | Validate a credit card number
@@ -120,4 +140,7 @@ sumList xs = error "TBD:sumList"
 -- False
 
 validateCardNumber :: Integer -> Bool
-validateCardNumber = error "TBD:validateCardNumber"
+validateCardNumber n =
+    if (mod (sumList(digitsOfInts(doubleEveryOther(listReverse(digitsOfInt n))))) 10)== 0
+        then True
+        else False
